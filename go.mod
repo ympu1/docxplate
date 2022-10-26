@@ -1,4 +1,4 @@
-module github.com/briiC/docxplate
+module github.com/ympu/docxplate
 
 go 1.18
 
