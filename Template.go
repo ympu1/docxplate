@@ -11,6 +11,8 @@ import (
 	"regexp"
 )
 
+const RemoveThisPlaceholder = "remove_this_placeholder"
+
 // Template ..
 type Template struct {
 	path string
@@ -224,14 +226,18 @@ func (t *Template) expandPlaceholders(xnode *xmlNode) {
 				// fmt.Printf("%-30s - %s", prefix, nrow.Contents())
 				for _, p2 := range p.Params {
 					// fmt.Printf("\tCLONE: %s -- %s -- %s\n", prefix+p2.Key, p2.PlaceholderPrefix(), nrow.Contents())
-					nnew := nrow.cloneAndAppend()
-					nnew.Walk(func(n *xmlNode) {
-						if !inSlice(n.XMLName.Local, []string{"w-t"}) {
-							return
-						}
-						n.Content = bytes.ReplaceAll(n.Content, []byte(prefix), []byte(p2.PlaceholderPrefix())) // w-t
-						n.haveParam = true
-					})
+
+					if p2.Params[0].Value != RemoveThisPlaceholder { //some dirty hack
+						nnew := nrow.cloneAndAppend()
+						nnew.Walk(func(n *xmlNode) {
+							if !inSlice(n.XMLName.Local, []string{"w-t"}) {
+								return
+							}
+							n.Content = bytes.ReplaceAll(n.Content, []byte(prefix), []byte(p2.PlaceholderPrefix())) // w-t
+							n.haveParam = true
+						})
+					}
+
 				}
 				nrow.delete()
 			})
