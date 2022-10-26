@@ -1,4 +1,4 @@
-module github.com/ympu/docxplate
+module github.com/ympu1/docxplate
 
 go 1.18
 
